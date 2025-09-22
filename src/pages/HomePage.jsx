@@ -21,7 +21,6 @@ export const HomePage = () => {
     dispatch(fetchPopularMovies({ page: 1 }));
   }, [dispatch]);
 
-  // BE sudah kasih genres sebagai array of objects
   const mapGenres = (genresArray) => {
     if (!genresArray) return [];
     return genresArray.map((g) => g.name);

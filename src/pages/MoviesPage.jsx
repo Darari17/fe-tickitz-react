@@ -14,26 +14,22 @@ export const MoviesPage = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // page from URL and local currentPage
   const pageParam = parseInt(searchParams.get("page") || "1", 10);
   const [currentPage, setCurrentPage] = useState(pageParam);
 
-  // search input with debounce
+  // dobounce
   const [debouncedQuery, setDebouncedQuery] = useState(
     searchParams.get("query") || ""
   );
 
-  // fetch genres once on mount
   useEffect(() => {
     dispatch(fetchGenres());
   }, []);
 
-  // keep local currentPage in sync with URL
   useEffect(() => {
     setCurrentPage(pageParam || 1);
   }, [pageParam]);
 
-  // debounce -> update query param (which also resets page to 1)
   useEffect(() => {
     const t = setTimeout(() => {
       updateParam("query", debouncedQuery || null);
@@ -41,7 +37,6 @@ export const MoviesPage = () => {
     return () => clearTimeout(t);
   }, [debouncedQuery]);
 
-  // fetch movies when searchParams change
   useEffect(() => {
     const q = searchParams.get("query") || "";
     const genre = parseInt(searchParams.get("genre") || "0", 10);
@@ -49,7 +44,6 @@ export const MoviesPage = () => {
     dispatch(fetchMovies({ page, search: q, genre }));
   }, [searchParams]);
 
-  // Update query params helper (and sync local page)
   const updateParam = (key, value) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
@@ -59,7 +53,6 @@ export const MoviesPage = () => {
         newParams.set(key, String(value));
       }
 
-      // reset page to 1 if changing something other than page
       if (key !== "page") newParams.set("page", "1");
       return newParams;
     });
@@ -71,12 +64,10 @@ export const MoviesPage = () => {
     }
   };
 
-  // safe lists
   const safeMovies = Array.isArray(movies) ? movies : [];
   const safeGenres = Array.isArray(genres) ? genres : [];
   const searchQuery = (searchParams.get("query") || "").toLowerCase();
 
-  // pagination helpers: windowed pages with ellipsis
   const totalPages = Number(meta?.total_pages) || 1;
   const getPagination = (cur, total) => {
     const pages = [];
@@ -84,7 +75,7 @@ export const MoviesPage = () => {
       for (let i = 1; i <= total; i++) pages.push(i);
       return pages;
     }
-    // always include first
+
     pages.push(1);
 
     const left = Math.max(2, cur - 2);
@@ -129,7 +120,6 @@ export const MoviesPage = () => {
 
       {/* SEARCH + FILTER BAR */}
       <section className="flex flex-col md:flex-row justify-between px-6 lg:px-12 py-8 gap-8">
-        {/* LEFT COLUMN: Label di atas, input di bawah (lebih sempit) */}
         <div className="flex flex-col w-full md:w-1/3 max-w-sm">
           <span className="font-medium mb-2">Cari Event</span>
           <input

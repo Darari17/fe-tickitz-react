@@ -48,7 +48,6 @@ export const MovieDetails = () => {
     }
   }, [id, dispatch]);
 
-  // Helper function to format date
   const getFormattedDate = useCallback((iso) => {
     if (!iso) return "";
     const d = new Date(iso);
@@ -60,17 +59,14 @@ export const MovieDetails = () => {
     });
   }, []);
 
-  // Helper function to get director
   const getDirector = useCallback((m) => {
     if (!m) return "";
     return m.director || m.director_name || "";
   }, []);
 
-  // Helper function to get cinema logo
   const getCinemaLogo = useCallback((c) => {
     if (!c || !c.name) return "/images/placeholder-cinema.svg";
 
-    // Mapping cinema names to their specific logos
     const logoMap = {
       "ebv.id": "/logos/ebv-id-logo.svg",
       ebv: "/logos/ebv-id-logo.svg",
@@ -80,25 +76,20 @@ export const MovieDetails = () => {
       "cinema 21": "/logos/cineone-21-logo.svg",
     };
 
-    // Convert cinema name to lowercase for matching
     const cinemaName = String(c.name).toLowerCase().trim();
 
-    // Check if logo is provided directly from API
     if (c.logo) {
       return c.logo;
     }
 
-    // Check mapping first
     if (logoMap[cinemaName]) {
       return logoMap[cinemaName];
     }
 
-    // Fallback: generate path from name
     const generatedPath = `/logos/${cinemaName.replace(/\s+/g, "-")}-logo.svg`;
     return generatedPath;
   }, []);
 
-  // Memoized function to update schedule ID
   const updateScheduleId = useCallback(
     (selectedDate, selectedTime, selectedLocation, selectedCinema) => {
       if (
@@ -126,17 +117,15 @@ export const MovieDetails = () => {
     [schedules, dispatch]
   );
 
-  // Auto-update schedule ID when dependencies change
   useEffect(() => {
     updateScheduleId(date, timeId, locationId, cinema);
   }, [date, timeId, locationId, cinema, updateScheduleId]);
 
-  // Handle date change
   const handleDateChange = useCallback(
     (e) => {
       const selectedDate = e.target.value;
       dispatch(setDate(selectedDate));
-      // Reset dependent selections
+
       if (timeId) {
         dispatch(setTime(null));
       }
@@ -150,12 +139,11 @@ export const MovieDetails = () => {
     [dispatch, timeId, locationId, cinema]
   );
 
-  // Handle time change
   const handleTimeChange = useCallback(
     (e) => {
       const selectedId = Number(e.target.value) || null;
       dispatch(setTime(selectedId));
-      // Reset dependent selections
+
       if (locationId) {
         dispatch(setLocation(null));
       }
@@ -166,12 +154,11 @@ export const MovieDetails = () => {
     [dispatch, locationId, cinema]
   );
 
-  // Handle location change
   const handleLocationChange = useCallback(
     (e) => {
       const selectedId = Number(e.target.value) || null;
       dispatch(setLocation(selectedId));
-      // Reset cinema if not available for new location
+
       if (cinema) {
         dispatch(setCinema(null));
       }
@@ -179,7 +166,6 @@ export const MovieDetails = () => {
     [dispatch, cinema]
   );
 
-  // Handle cinema selection
   const handleCinemaClick = useCallback(
     (c) => {
       const newCinema = cinema?.id === c.id ? null : c;
@@ -188,7 +174,6 @@ export const MovieDetails = () => {
     [cinema, dispatch]
   );
 
-  // Handle book now action
   const handleBookNow = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
@@ -232,7 +217,6 @@ export const MovieDetails = () => {
     navigate,
   ]);
 
-  // Memoized filtered options
   const availableDates = useMemo(() => {
     return [
       ...new Set(schedules.map((s) => (s.date || "").split("T")[0])),
@@ -385,7 +369,6 @@ export const MovieDetails = () => {
         </div>
 
         {/* Cinemas */}
-        {/* Cinemas */}
         <div className="my-8">
           <h4 className="mb-4 text-lg font-semibold">Choose Cinema</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -404,7 +387,6 @@ export const MovieDetails = () => {
                   alt={c.name}
                   className="max-h-12"
                   onError={(e) => {
-                    // Fallback to placeholder if image fails to load
                     if (e.target.src !== "/images/placeholder-cinema.svg") {
                       e.target.src = "/images/placeholder-cinema.svg";
                     }

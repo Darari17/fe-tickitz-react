@@ -44,7 +44,6 @@ export const OrderPage = () => {
     dispatch(setSelectedSeats(newSeats));
   };
 
-  // Default harga tiket, nanti bisa ambil dari DB/Redux kalau perlu
   const pricePerTicket = 10;
 
   return (

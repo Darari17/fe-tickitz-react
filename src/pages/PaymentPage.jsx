@@ -49,14 +49,12 @@ export const PaymentPage = () => {
   const openModal = () => setModal(true);
   const closeModal = () => setModal(false);
 
-  // Prefill email dari Redux user
   useEffect(() => {
     if (user?.email) {
       setValue("email", user.email, { shouldValidate: true });
     }
   }, [user, setValue]);
 
-  // Hardcode payment methods sesuai DB + logo
   const payments = [
     { id: 1, name: "GPay", logo: "/logos/google-pay-logo.svg" },
     { id: 2, name: "Visa", logo: "/logos/visa-logo.svg" },
@@ -69,7 +67,6 @@ export const PaymentPage = () => {
   ];
 
   const onSubmit = async (data) => {
-    // 🔹 Validasi wajib
     if (!scheduleId) {
       alert("Mohon pilih Date, Time, Location, dan Cinema terlebih dahulu");
       return;
@@ -91,7 +88,7 @@ export const PaymentPage = () => {
     try {
       const resultAction = await dispatch(createOrder(orderData));
       if (createOrder.fulfilled.match(resultAction)) {
-        openModal(); // ✅ hanya buka modal kalau sukses
+        openModal();
       } else {
         alert(
           "Gagal membuat order: " +
