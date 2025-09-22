@@ -1,14 +1,20 @@
-name: Building image frontend-tickitz-go and pushing to GHCR
+name: Building image frontend-tickitz-react and pushing to GHCR
+
 on: [push]
+
 jobs:
   Build-And-Publish:
-    runs-on: node:lts-alpine3.21
+    runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Build and publish a Docker image for ${{ github.repository }}
-        uses: macbre/push-to-ghcr@master
-        with:
-          image-name: ${{ github.repository }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image (frontend)
+        run: docker build -f Dockerfile.frontend -t ghcr.io/darari17/frontend:latest .
+
+      - name: Push Docker image (frontend)
+        run: docker push ghcr.io/darari17/frontend:latest
