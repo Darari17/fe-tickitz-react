@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../lib/axios"; // sesuaikan dengan path axiosInstance Anda
+import { axiosInstance } from "../../lib/axios";
 
-// =================== Thunks ===================
-
-// Ambil semua movies (support page, search, genre)
 export const fetchMovies = createAsyncThunk(
   "movies/fetchMovies",
   async ({ page = 1, search = "", genre = 0 }, { rejectWithValue }) => {
@@ -11,7 +8,6 @@ export const fetchMovies = createAsyncThunk(
       const res = await axiosInstance.get("/movies", {
         params: { page, search, genre },
       });
-      // BE format: { movies: [...], meta: {...} }
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
@@ -19,20 +15,18 @@ export const fetchMovies = createAsyncThunk(
   }
 );
 
-// Ambil semua genre dari MovieRepository endpoint: /movies/genres
 export const fetchGenres = createAsyncThunk(
   "movies/fetchGenres",
   async (_, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get("/movies/genres");
-      return res.data.data; // array genre [{id, name}, ...]
+      return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-// Upcoming movies
 export const fetchUpcomingMovies = createAsyncThunk(
   "movies/fetchUpcomingMovies",
   async ({ page = 1 }, { rejectWithValue }) => {
@@ -40,14 +34,13 @@ export const fetchUpcomingMovies = createAsyncThunk(
       const res = await axiosInstance.get("/movies/upcoming", {
         params: { page },
       });
-      return res.data.data; // array movie
+      return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-// Popular movies
 export const fetchPopularMovies = createAsyncThunk(
   "movies/fetchPopularMovies",
   async ({ page = 1 }, { rejectWithValue }) => {
@@ -55,43 +48,41 @@ export const fetchPopularMovies = createAsyncThunk(
       const res = await axiosInstance.get("/movies/popular", {
         params: { page },
       });
-      return res.data.data; // array movie
+      return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-// Detail movie
 export const fetchMovieDetails = createAsyncThunk(
   "movies/fetchMovieDetails",
   async (id, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`/movies/${id}`);
-      return res.data.data; // single movie detail
+      return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-// =================== Slice ===================
 const moviesSlice = createSlice({
   name: "movies",
   initialState: {
-    movies: [], // daftar film (list page/search/filter)
-    meta: { page: 1, limit: 12, total: 0, total_pages: 0 }, // info pagination
-    genres: [], // semua genre
-    upcoming: [], // upcoming movies
-    popular: [], // popular movies
-    movieDetails: null, // detail movie
+    movies: [],
+    meta: { page: 1, limit: 12, total: 0, total_pages: 0 },
+    genres: [],
+    upcoming: [],
+    popular: [],
+    movieDetails: null,
     isLoading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch Movies
+
       .addCase(fetchMovies.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -106,7 +97,6 @@ const moviesSlice = createSlice({
         state.error = payload;
       })
 
-      // Fetch Genres
       .addCase(fetchGenres.pending, (state) => {
         state.error = null;
       })
@@ -117,7 +107,6 @@ const moviesSlice = createSlice({
         state.error = payload;
       })
 
-      // Upcoming
       .addCase(fetchUpcomingMovies.fulfilled, (state, { payload }) => {
         state.upcoming = payload;
       })
@@ -125,7 +114,6 @@ const moviesSlice = createSlice({
         state.error = payload;
       })
 
-      // Popular
       .addCase(fetchPopularMovies.fulfilled, (state, { payload }) => {
         state.popular = payload;
       })
@@ -133,7 +121,6 @@ const moviesSlice = createSlice({
         state.error = payload;
       })
 
-      // Detail
       .addCase(fetchMovieDetails.fulfilled, (state, { payload }) => {
         state.movieDetails = payload;
       })

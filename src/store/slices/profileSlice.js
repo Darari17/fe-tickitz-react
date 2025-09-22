@@ -7,7 +7,6 @@ const initialState = {
   profile: null,
 };
 
-// GET /profile
 export const getUser = createAsyncThunk(
   "profile/getUser",
   async (_, { rejectWithValue }) => {
@@ -24,7 +23,6 @@ export const getUser = createAsyncThunk(
   }
 );
 
-// PATCH /profile
 export const updateProfile = createAsyncThunk(
   "profile/updateProfile",
   async (data, { rejectWithValue }) => {

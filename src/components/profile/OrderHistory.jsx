@@ -99,14 +99,8 @@ export const OrderHistory = () => {
                 <span className="block text-sm text-gray-500">
                   {order.date} - {order.time}
                 </span>
-                {/* <span className="block font-semibold">
-                  {order.selectedMovie?.title || "-"}
-                </span>
-                <span className="block text-xs text-gray-500">
-                  {order.location} - {order.cinema?.name || "-"}
-                </span> */}
                 <span className="block font-semibold">
-                  {order.movieTitle || "-"}
+                  {order.selectedMovie?.title || "-"}
                 </span>
                 <span className="block text-xs text-gray-500">
                   {order.location} - {order.cinema?.name || "-"}

@@ -1,17 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios";
 
-// =========================
-// Thunks
-// =========================
-
-// Create Order
 export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (orderData, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/orders", orderData);
-      // backend balikin { code, success, data: { order_id, qr_code, seats } }
       return res.data.data;
     } catch (err) {
       return rejectWithValue(
@@ -21,7 +15,6 @@ export const createOrder = createAsyncThunk(
   }
 );
 
-// Fetch Schedules
 export const fetchSchedules = createAsyncThunk(
   "order/fetchSchedules",
   async (movieId, { rejectWithValue }) => {
@@ -38,7 +31,6 @@ export const fetchSchedules = createAsyncThunk(
   }
 );
 
-// Fetch Locations
 export const fetchLocations = createAsyncThunk(
   "order/fetchLocations",
   async (_, { rejectWithValue }) => {
@@ -53,7 +45,6 @@ export const fetchLocations = createAsyncThunk(
   }
 );
 
-// Fetch Times
 export const fetchTimes = createAsyncThunk(
   "order/fetchTimes",
   async (_, { rejectWithValue }) => {
@@ -68,7 +59,6 @@ export const fetchTimes = createAsyncThunk(
   }
 );
 
-// Fetch Payments
 export const fetchPayments = createAsyncThunk(
   "order/fetchPayments",
   async (_, { rejectWithValue }) => {
@@ -83,7 +73,6 @@ export const fetchPayments = createAsyncThunk(
   }
 );
 
-// Fetch Cinemas
 export const fetchCinemas = createAsyncThunk(
   "order/fetchCinemas",
   async (_, { rejectWithValue }) => {
@@ -98,9 +87,6 @@ export const fetchCinemas = createAsyncThunk(
   }
 );
 
-// =========================
-// Initial State
-// =========================
 const initialState = {
   selectedMovie: null,
   schedules: [],
@@ -119,9 +105,6 @@ const initialState = {
   error: null,
 };
 
-// =========================
-// Slice
-// =========================
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -151,45 +134,42 @@ const orderSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // createOrder
+
       .addCase(createOrder.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.loading = false;
-        state.lastOrder = action.payload; // langsung ambil { order_id, qr_code, seats }
+        state.lastOrder = action.payload;
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      // fetchSchedules
+
       .addCase(fetchSchedules.fulfilled, (state, action) => {
         state.schedules = action.payload;
       })
-      // fetchLocations
+
       .addCase(fetchLocations.fulfilled, (state, action) => {
         state.locations = action.payload;
       })
-      // fetchTimes
+
       .addCase(fetchTimes.fulfilled, (state, action) => {
         state.times = action.payload;
       })
-      // fetchPayments
+
       .addCase(fetchPayments.fulfilled, (state, action) => {
         state.payments = action.payload;
       })
-      // fetchCinemas
+
       .addCase(fetchCinemas.fulfilled, (state, action) => {
         state.cinemas = action.payload;
       });
   },
 });
 
-// =========================
-// Exports
-// =========================
 export const {
   setSelectedMovie,
   setDate,

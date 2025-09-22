@@ -7,7 +7,7 @@ export const fetchHistory = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get("/orders/history");
-      return res.data.data;
+      return res.data.data || [];
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to fetch history"
@@ -27,7 +27,9 @@ const historySlice = createSlice({
   initialState,
   reducers: {
     addOrderToHistory: (state, action) => {
-      state.orders.unshift(action.payload);
+      if (action.payload) {
+        state.orders.unshift(action.payload);
+      }
     },
     resetHistory: () => initialState,
   },
@@ -47,12 +49,10 @@ const historySlice = createSlice({
         state.error = action.payload;
       })
 
-      // .addCase(createOrder.fulfilled, (state, action) => {
-      //   if (action.payload) {
-      //     state.orders.unshift(action.payload);
-      //   }
-      // });
-      .addCase(createOrder.fulfilled, (state) => {
+      .addCase(createOrder.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.orders.unshift(action.payload);
+        }
         state.status = "idle";
       });
   },
