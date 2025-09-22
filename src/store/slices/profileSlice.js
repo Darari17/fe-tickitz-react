@@ -33,7 +33,9 @@ export const updateProfile = createAsyncThunk(
       if (data.phoneNumber) formData.append("phone_number", data.phoneNumber);
       if (data.avatar) formData.append("avatar", data.avatar);
 
-      const response = await uploadInstance.patch("/profile", formData);
+      const endpoint = data.avatar ? "/profile/change-avatar" : "/profile";
+      const response = await uploadInstance.patch(endpoint, formData);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -71,7 +73,6 @@ const profileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-
       .addCase(getUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -84,14 +85,12 @@ const profileSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.profile = { ...state.profile, ...action.payload.data };
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.error = action.payload;
       })
-
       .addCase(changePassword.rejected, (state, action) => {
         state.error = action.payload;
       });

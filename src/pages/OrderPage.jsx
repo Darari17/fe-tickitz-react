@@ -13,7 +13,6 @@ export const OrderPage = () => {
     selectedMovie = null,
     date = "",
     time = "",
-    // location = "",
     cinema = null,
     selectedSeats = [],
   } = useSelector((state) => state.order || {});

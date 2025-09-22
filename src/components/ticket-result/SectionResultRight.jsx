@@ -5,12 +5,23 @@ import { resetOrder } from "../../store/slices/orderSlice";
 export const SectionResultRight = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const {
     selectedMovie,
     date,
-    time,
+    timeId,
+    locationId,
+    cinema,
     selectedSeats = [],
+    times = [],
+    locations = [],
+    // cinemas = [],
   } = useSelector((state) => state.order || {});
+
+  const selectedTime = times.find((t) => t.id === timeId)?.label || "-";
+  const selectedLocation =
+    locations.find((l) => l.id === locationId)?.name || "-";
+  const selectedCinema = cinema?.name || "-";
 
   const pricePerTicket = 10;
   const totalPayment = selectedSeats.length * pricePerTicket;
@@ -25,7 +36,9 @@ export const SectionResultRight = () => {
       movie: selectedMovie?.title,
       category: selectedMovie?.category,
       date,
-      time,
+      time: selectedTime,
+      location: selectedLocation,
+      cinema: selectedCinema,
       seats: selectedSeats,
       totalPayment,
     });
@@ -73,7 +86,21 @@ export const SectionResultRight = () => {
           <div className="flex flex-col items-start justify-center">
             <div className="text-xs text-[#aaaaaa]">Time</div>
             <div className="font-semibold text-sm text-[#14142b]">
-              {time || "-"}
+              {selectedTime}
+            </div>
+          </div>
+
+          <div className="flex flex-col items-start justify-center">
+            <div className="text-xs text-[#aaaaaa]">Location</div>
+            <div className="font-semibold text-sm text-[#14142b]">
+              {selectedLocation}
+            </div>
+          </div>
+
+          <div className="flex flex-col items-start justify-center">
+            <div className="text-xs text-[#aaaaaa]">Cinema</div>
+            <div className="font-semibold text-sm text-[#14142b]">
+              {selectedCinema}
             </div>
           </div>
 

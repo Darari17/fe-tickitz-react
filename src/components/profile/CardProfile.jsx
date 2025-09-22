@@ -1,18 +1,21 @@
 import { useSelector, useDispatch } from "react-redux";
-import { updateProfile } from "../../store/slices/profileSlice";
+import { updateProfile, getUser } from "../../store/slices/profileSlice";
 import { toast } from "react-toastify";
 
 export const CardProfile = () => {
   const dispatch = useDispatch();
   const { profile, loading } = useSelector((state) => state.profile);
-  const { user } = useSelector((state) => state.auth); // ambil dari authSlice
+  const { user } = useSelector((state) => state.auth);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       dispatch(updateProfile({ avatar: file }))
         .unwrap()
-        .then(() => toast.success("Avatar updated!"))
+        .then(() => {
+          toast.success("Avatar updated!");
+          dispatch(getUser());
+        })
         .catch((err) => toast.error(err));
     }
   };
@@ -37,15 +40,12 @@ export const CardProfile = () => {
         <img src="/logos/dot-horizontal.svg" alt="dot" />
       </div>
 
-      {/* Avatar upload */}
       <div className="flex justify-center relative">
         <label htmlFor="avatar-upload" className="cursor-pointer">
           <img
             src={
               profile?.avatar
-                ? `${import.meta.env.VITE_BE_TICKITZ_API}/static/${
-                    profile.avatar
-                  }`
+                ? `http://localhost:8080/img/${profile.avatar}`
                 : "/images/ava-profile.svg"
             }
             alt="avatar"

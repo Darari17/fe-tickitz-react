@@ -210,7 +210,6 @@ export const MoviesPage = () => {
           )}
         </div>
 
-        {/* Next */}
         <button
           onClick={() => {
             const newPage =

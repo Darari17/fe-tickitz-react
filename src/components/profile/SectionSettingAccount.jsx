@@ -11,7 +11,6 @@ import { useState, useEffect } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from "react-toastify";
 
-// Schema validasi tanpa confirmPassword
 const profileSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
@@ -62,7 +61,6 @@ export const SectionSettingAccount = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Update detail profile
       await dispatch(
         updateProfile({
           firstName: data.firstName || undefined,
@@ -71,7 +69,6 @@ export const SectionSettingAccount = () => {
         })
       ).unwrap();
 
-      // Update password jika ada input newPassword
       if (data.newPassword) {
         await dispatch(
           changePassword({
@@ -82,7 +79,7 @@ export const SectionSettingAccount = () => {
       }
 
       toast.success("Perubahan berhasil disimpan!");
-      dispatch(getUser()); // refresh profile
+      dispatch(getUser());
     } catch (err) {
       toast.error(err || "Gagal menyimpan perubahan");
     }
