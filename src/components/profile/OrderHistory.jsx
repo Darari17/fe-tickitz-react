@@ -86,7 +86,8 @@ export const OrderHistory = () => {
   return (
     <div className="flex flex-col gap-4">
       {orders.map((order, idx) => {
-        const paid = order.paid || true;
+        // const paid = order.paid || true;
+        const paid = order.paid ?? false;
 
         return (
           <div
@@ -98,8 +99,14 @@ export const OrderHistory = () => {
                 <span className="block text-sm text-gray-500">
                   {order.date} - {order.time}
                 </span>
-                <span className="block font-semibold">
+                {/* <span className="block font-semibold">
                   {order.selectedMovie?.title || "-"}
+                </span>
+                <span className="block text-xs text-gray-500">
+                  {order.location} - {order.cinema?.name || "-"}
+                </span> */}
+                <span className="block font-semibold">
+                  {order.movieTitle || "-"}
                 </span>
                 <span className="block text-xs text-gray-500">
                   {order.location} - {order.cinema?.name || "-"}

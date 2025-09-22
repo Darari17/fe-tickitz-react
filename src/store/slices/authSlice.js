@@ -1,4 +1,3 @@
-// src/store/slices/authSlice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios.js";
 
@@ -16,7 +15,7 @@ export const login = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/auth/login", data);
-      return response.data; // backend balikin { code, success, message, data: {...} }
+      return response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || error.message || "Login gagal"
@@ -53,13 +52,18 @@ const authSlice = createSlice({
       state.token = null;
       state.loading = false;
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
     setUserFromStorage: (state, { payload }) => {
-      state.isLogin = true;
-      if (payload.user) {
-        state.user = payload.user;
+      const token = payload?.token || localStorage.getItem("token");
+      const user =
+        payload?.user || JSON.parse(localStorage.getItem("user") || "null");
+
+      if (token && user) {
+        state.isLogin = true;
+        state.token = token;
+        state.user = user;
       }
-      state.token = payload.token;
     },
   },
   extraReducers: (builder) => {
@@ -73,20 +77,20 @@ const authSlice = createSlice({
         state.loading = false;
         state.isLogin = true;
 
-        const data = payload?.data || {};
+        const userData = payload?.data || {};
 
-        // mapping sesuai response backend (snake_case)
         state.user = {
-          id: data.user_id || null,
-          email: data.email || null,
-          role: data.role || null,
+          id: userData.user_id || null,
+          email: userData.email || null,
+          role: userData.role || null,
         };
-        state.token = data.token || null;
+        state.token = userData.token || null;
 
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-        } else {
-          console.warn("⚠️ Token tidak ditemukan di response:", data);
+        if (state.token) {
+          localStorage.setItem("token", state.token);
+        }
+        if (state.user) {
+          localStorage.setItem("user", JSON.stringify(state.user));
         }
       })
       .addCase(login.rejected, (state, { payload }) => {
@@ -101,7 +105,7 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state) => {
         state.loading = false;
-        state.isLogin = false; // setelah register, user tetap harus login manual
+        state.isLogin = false;
         state.user = null;
         state.token = null;
       })

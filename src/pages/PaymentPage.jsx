@@ -211,7 +211,6 @@ export const PaymentPage = () => {
                 type="email"
                 className="h-10 pl-6 border rounded-md w-full bg-gray-100 cursor-not-allowed"
                 {...register("email")}
-                readOnly
               />
               {errors.email && (
                 <p className="text-xs text-red-500">{errors.email.message}</p>
