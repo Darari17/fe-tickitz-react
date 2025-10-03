@@ -38,4 +38,4 @@ jobs:
           file: ./Dockerfile.new
           push: true
           tags: ghcr.io/darari17/fe-tickitz-react:latest
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
