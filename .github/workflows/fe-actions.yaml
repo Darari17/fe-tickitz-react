@@ -3,8 +3,7 @@ name: Build & Push Frontend Docker Image
 on:
   push:
     branches:
-      - main
-      - development
+      - master
 
 permissions:
   contents: read
