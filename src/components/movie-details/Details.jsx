@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { getPosterUrl } from "../../utils/imageHelper";
 
 export const Detail = ({
   poster,
@@ -9,27 +10,26 @@ export const Detail = ({
   director,
   casts,
 }) => {
-  const posterUrl = poster
-    ? `${import.meta.env.VITE_TMDB_API_IMAGE_URL}${poster}`
-    : "/images/placeholder-poster.svg";
+  const [posterErr, setPosterErr] = useState(false);
+
+  let posterUrl = getPosterUrl(poster);
+  if (posterErr) posterUrl = "/images/placeholder-poster.svg";
 
   return (
     <section className="relative font-[Mulish] bg-white ">
       <div className="flex flex-col lg:flex-row px-6 lg:px-12 py-10 lg:items-center">
-        {/* Poster */}
         <div className="flex-shrink-0 -mt-70 lg:-mt-50 mx-auto lg:mx-0">
           <img
             src={posterUrl}
             alt={title}
             className="w-80 sm:w-96 lg:w-64 h-auto rounded shadow-lg"
+            onError={() => setPosterErr(true)}
           />
         </div>
 
-        {/* Info */}
         <div className="mt-6 lg:mt-0 lg:ml-10">
           <h2 className="mb-3 text-2xl font-bold">{title}</h2>
 
-          {/* Genres */}
           <div className="flex flex-row flex-wrap gap-2 mb-4">
             {genres?.map((genre) => (
               <span
@@ -44,7 +44,7 @@ export const Detail = ({
           <div className="grid grid-cols-2 gap-y-4">
             <div>
               <p className="text-[#8692A6] text-sm">Release date</p>
-              <p className="text-[#121212]">{release_date}</p>
+              <p className="text-[#121212]">{release_date || "—"}</p>
             </div>
 
             <div>
