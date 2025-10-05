@@ -5,6 +5,7 @@ import authReducer from "./slices/authSlice";
 import orderReducer from "./slices/orderSlice";
 import historyReducer from "./slices/historySlice";
 import profileReducer from "./slices/profileSlice";
+import adminReducer from "./slices/adminSlice";
 import {
   persistReducer,
   persistStore,
@@ -29,6 +30,7 @@ const persistedReducer = persistReducer(
     order: orderReducer,
     history: historyReducer,
     profile: profileReducer,
+    admin: adminReducer,
   })
 );
 
