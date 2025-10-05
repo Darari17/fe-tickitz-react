@@ -28,11 +28,7 @@ const RouterLayout = () => (
 
 export const PrivateLayout = () => {
   const { token } = useSelector((state) => state.auth);
-
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-
+  if (!token) return <Navigate to="/login" replace />;
   return <Outlet />;
 };
 
@@ -43,7 +39,7 @@ export const AdminLayout = () => {
   if (user?.role !== "admin") return <Navigate to="/" replace />;
 
   return (
-    <main className="bg-gray-300">
+    <main className="bg-gray-100 min-h-screen">
       <NavbarAdmin />
       <div className="px-6 lg:px-12 py-10">
         <Outlet />
@@ -54,6 +50,7 @@ export const AdminLayout = () => {
 
 export const App = () => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -70,27 +67,37 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<RouterLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="movies" element={<MoviesPage />} />
-          <Route path="movies/:id" element={<MovieDetails />} />
+        {user?.role === "admin" ? (
+          <>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="movies" element={<MovieList />} />
+            </Route>
 
-          <Route element={<PrivateLayout />}>
-            <Route path="order" element={<OrderPage />} />
-            <Route path="payment" element={<PaymentPage />} />
-            <Route path="result" element={<TicketResultPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-          </Route>
-        </Route>
+            <Route path="*" element={<Navigate to="/admin" replace />} />
+          </>
+        ) : (
+          <>
+            <Route element={<RouterLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="movies" element={<MoviesPage />} />
+              <Route path="movies/:id" element={<MovieDetails />} />
 
-        <Route path="admin" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="movies" element={<MovieList />} />
-        </Route>
+              <Route element={<PrivateLayout />}>
+                <Route path="order" element={<OrderPage />} />
+                <Route path="payment" element={<PaymentPage />} />
+                <Route path="result" element={<TicketResultPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+              </Route>
+            </Route>
 
-        <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+
+            <Route path="admin/*" element={<Navigate to="/" replace />} />
+          </>
+        )}
       </Routes>
     </BrowserRouter>
   );
